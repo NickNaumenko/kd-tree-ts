@@ -1,9 +1,13 @@
 import KDNode, { Node } from './node';
 import { IPoint2D } from "./point";
+import minimum from './tools/minimum';
 
 interface IKDTree {
+  root: Node;
   insert(value: IPoint2D): Node;
   delete(value: IPoint2D): boolean;
+  findMin(node: Node, d: number, cd: number): Node;
+  // nearestNeighbor(value: IPoint2D): Node;
 }
 
 class KDTree implements IKDTree {
@@ -43,6 +47,36 @@ class KDTree implements IKDTree {
 
   delete(value: IPoint2D) {
     return value === null;
+  }
+
+  // nearestNeighbor(point: IPoint2D, best: number = Infinity) {
+  //   if (this.root === null || KDTree.distance(point)) {
+
+  //   }
+  //   return this.root;
+  // }
+
+  findMin(node: Node = this.root, dimension: number, cd: number = 0): any {
+    if (node === null) {
+      return null;
+    }
+    if (dimension === cd) {
+      if (node.left === null) {
+        return node;
+      }
+      cd = (cd + 1) % this.dimensions;
+      return this.findMin(node.left, dimension, cd);
+    }
+    cd = (cd + 1) % this.dimensions;
+    
+    const left: Node = this.findMin(node.left, dimension, cd);
+    const right: Node = this.findMin(node.right, dimension, cd);
+
+    return minimum(node, left, right, dimension);
+  } 
+
+  static distance(a: IPoint2D, b: IPoint2D) {
+    return Math.sqrt(Math.pow((a[0] - b[0]), 2) + Math.pow((a[1] - b[1]), 2));
   }
 }
 
