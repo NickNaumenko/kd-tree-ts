@@ -1,8 +1,3 @@
-export const sum = (a: number, b: number) => {
-  if ('development' === process.env.NODE_ENV) {
-    console.log('boop');
-  }
-  return a + b;
-};
+import KDTree from './kd-tree';
 
-console.log(sum(5, 7));
+export default KDTree;

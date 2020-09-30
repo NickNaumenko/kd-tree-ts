@@ -19,6 +19,10 @@ class KDNode implements INode {
   constructor(public point: IPoint2D, cd: number) {
     this.cd = cd;
   }
+
+  toString() {
+    return this.point.toString();
+  }
 }
 
 export default KDNode;
