@@ -92,7 +92,6 @@ class KDTree {
         xMax: Infinity,
         yMax: Infinity,
       }
-      // cd: number = 0
     ): void => {
       if (node === undefined) {
         return;
