@@ -5,10 +5,7 @@ import Rect, { Rectangle } from './rect';
 
 class KDTree {
   root: Node;
-  constructor(
-    readonly points?: Array<Point2D>,
-    private dimensions: number = 2
-  ) {}
+  constructor(readonly points?: Point2D[], private dimensions: number = 2) {}
 
   insert(point: Point2D) {
     if (!this.root) {
@@ -86,10 +83,15 @@ class KDTree {
     if (!this.root) {
       return result;
     }
-  
+
     const search = (
       node: Node,
-      box: Rectangle = { xMin: -Infinity, yMin: -Infinity, xMax: Infinity, yMax: Infinity},
+      box: Rectangle = {
+        xMin: -Infinity,
+        yMin: -Infinity,
+        xMax: Infinity,
+        yMax: Infinity,
+      }
       // cd: number = 0
     ): void => {
       if (node === undefined) {
@@ -99,8 +101,18 @@ class KDTree {
       if (searchRect.contains(node.point)) {
         result.push(point);
       }
-      const leftBox = { xMin: box.xMin, yMin: box.yMin, xMax: point[0], yMax: point[1] };
-      const rightBox = { xMin: point[0], yMin: point[1], xMax: box.xMax, yMax: box.yMax };
+      const leftBox = {
+        xMin: box.xMin,
+        yMin: box.yMin,
+        xMax: point[0],
+        yMax: point[1],
+      };
+      const rightBox = {
+        xMin: point[0],
+        yMin: point[1],
+        xMax: box.xMax,
+        yMax: box.yMax,
+      };
 
       if (searchRect.intersects(leftBox)) {
         search(node.left, leftBox);
