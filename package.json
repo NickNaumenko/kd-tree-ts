@@ -26,8 +26,8 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "kd-tree",
-  "author": "Nick",
+  "name": "kd-tree-ts",
+  "author": "Nick Naumenko",
   "module": "dist/kd-tree.esm.js",
   "size-limit": [
     {
