@@ -1,6 +1,7 @@
 import KDNode, { Node } from './kdNode';
 import { Point2D } from './types/point2d';
 import distance from './tools/distance';
+import Rect, { Rectangle } from './rect';
 
 class KDTree {
   root: Node;
@@ -74,6 +75,42 @@ class KDTree {
     };
 
     search(point, this.root, 0);
+
+    return result;
+  }
+
+  rangeSearch(rect: Rectangle): Point2D[] | [] {
+    const searchRect = new Rect(rect.xMin, rect.yMin, rect.xMax, rect.yMax);
+    const result: Point2D[] = [];
+
+    if (!this.root) {
+      return result;
+    }
+  
+    const search = (
+      node: Node,
+      box: Rectangle = { xMin: -Infinity, yMin: -Infinity, xMax: Infinity, yMax: Infinity},
+      // cd: number = 0
+    ): void => {
+      if (node === undefined) {
+        return;
+      }
+      const { point } = node;
+      if (searchRect.contains(node.point)) {
+        result.push(point);
+      }
+      const leftBox = { xMin: box.xMin, yMin: box.yMin, xMax: point[0], yMax: point[1] };
+      const rightBox = { xMin: point[0], yMin: point[1], xMax: box.xMax, yMax: box.yMax };
+
+      if (searchRect.intersects(leftBox)) {
+        search(node.left, leftBox);
+      }
+      if (searchRect.intersects(rightBox)) {
+        search(node.right, rightBox);
+      }
+    };
+
+    search(this.root);
 
     return result;
   }
