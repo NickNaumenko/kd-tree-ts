@@ -1,10 +1,13 @@
 import KDNode, { Node } from './kdNode';
-import { Point2D } from "./types/point";
+import { Point2D } from './types/point2d';
 import distance from './tools/distance';
 
 class KDTree {
-  root: Node
-  constructor(readonly points?: Array<Point2D>, private dimensions: number = 2) {}
+  root: Node;
+  constructor(
+    readonly points?: Array<Point2D>,
+    private dimensions: number = 2
+  ) {}
 
   insert(point: Point2D) {
     if (!this.root) {
@@ -40,7 +43,7 @@ class KDTree {
   nearestNeighbor(point: Point2D) {
     let bestDist = Infinity;
     let result: Point2D | null = null;
-  
+
     const distanceToBb = (point: Point2D, bB: KDNode, cd: number): number => {
       return Math.abs(bB.point[cd] - point[cd]);
     };

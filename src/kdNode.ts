@@ -10,9 +10,9 @@ export interface INode {
 export type Node = INode | undefined;
 
 class KDNode implements INode {
-  left: Node
-  right: Node
-  parent: Node
+  left: Node;
+  right: Node;
+  parent: Node;
 
   constructor(public point: Point2D) {}
 
