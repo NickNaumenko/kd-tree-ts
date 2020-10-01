@@ -1,3 +1,3 @@
-import KDTree from './kd-tree';
+import KDTree from './kdTree';
 
 export default KDTree;
