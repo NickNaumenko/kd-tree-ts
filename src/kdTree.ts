@@ -1,5 +1,5 @@
 import KDNode, { Node } from './kdNode';
-import { Point2D } from "./types/point";
+import { Point2D } from "./types/point2d";
 import distance from './tools/distance';
 
 class KDTree {
