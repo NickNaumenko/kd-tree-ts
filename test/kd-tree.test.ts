@@ -2,7 +2,8 @@ import KDTree from '../src/index';
 import KDNode from '../src/kdNode';
 import { Point2D } from '../src/types/point2d';
 import distance from '../src/tools/distance';
-import { Rectangle } from '../src/rect';
+import { Rect2d } from '../src/types/rect2d';
+const readInput = require('./tools/readInput');
 
 const createTree = (points: Point2D[]): KDTree => {
   const tree = new KDTree();
@@ -98,8 +99,8 @@ describe('Range search', () => {
     [8, 7],
   ];
   const tree = createTree(points);
-  it('Should return array with points in range', () => {
-    const rect: Rectangle = { xMin: 1, yMin: 1, xMax: 7, yMax: 7 };
+  it('Should return array with points in range', async () => {
+    const rect: Rect2d = [[1, 1], [7, 7]];
     expect(tree.rangeSearch(rect)).toEqual(
       expect.arrayContaining([
         [2, 3],
@@ -108,11 +109,21 @@ describe('Range search', () => {
         [7, 2],
       ])
     );
-    const rect2: Rectangle = { xMin: 5, yMin: 5, xMax: 6, yMax: 5 };
+    const rect2: Rect2d = [[5, 5], [6, 5]];
     expect(tree.rangeSearch(rect2)).toEqual(expect.arrayContaining([[6, 5]]));
+    const data: Point2D[] = await readInput(61, 'test/data/input61.txt');
+    const expected: Point2D[] = [
+      [249, 298.125],
+      [273, 276.125],
+      [292, 312.125],
+      [271, 313.125],
+    ];
+    const tree2 = createTree(data);
+    const rect3: Rect2d = [[237, 273.125], [313, 327.125]];
+    expect(tree2.rangeSearch(rect3)).toEqual(expect.arrayContaining(expected));
   });
   it('Should return empty array if there is no matches', () => {
-    const rect: Rectangle = { xMin: 10, yMin: 1, xMax: 20, yMax: 10 };
+    const rect: Rect2d = [[10, 1], [20, 10]];
     expect(tree.rangeSearch(rect)).toEqual([]);
   });
 });
