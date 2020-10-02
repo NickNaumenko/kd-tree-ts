@@ -1,7 +1,8 @@
 import KDNode, { Node } from './kdNode';
 import { Point2D } from './types/point2d';
 import distance from './tools/distance';
-import Rect, { Rectangle } from './rect';
+import Rect from './rect';
+import { Rect2d } from './types/rect2d';
 
 class KDTree {
   root: Node;
@@ -76,8 +77,7 @@ class KDTree {
     return result;
   }
 
-  rangeSearch(rect: Rectangle): Point2D[] | [] {
-    const searchRect = new Rect(rect.xMin, rect.yMin, rect.xMax, rect.yMax);
+  rangeSearch(rect: Rect2d): Point2D[] | [] {
     const result: Point2D[] = [];
 
     if (!this.root) {
@@ -86,38 +86,30 @@ class KDTree {
 
     const search = (
       node: Node,
-      box: Rectangle = {
-        xMin: -Infinity,
-        yMin: -Infinity,
-        xMax: Infinity,
-        yMax: Infinity,
-      }
+      box: Rect2d = [
+        [-Infinity, -Infinity],
+        [Infinity, Infinity],
+      ],
+      cd: number = 0
     ): void => {
       if (node === undefined) {
         return;
       }
       const { point } = node;
-      if (searchRect.contains(node.point)) {
+      if (Rect.contains(rect, node.point)) {
         result.push(point);
       }
-      const leftBox = {
-        xMin: box.xMin,
-        yMin: box.yMin,
-        xMax: point[0],
-        yMax: point[1],
-      };
-      const rightBox = {
-        xMin: point[0],
-        yMin: point[1],
-        xMax: box.xMax,
-        yMax: box.yMax,
-      };
+      const leftBox: Rect2d = Rect.clone(box);
+      leftBox[1][cd] = point[cd];
+      const rightBox: Rect2d = Rect.clone(box);
+      rightBox[0][cd] = point[cd];
 
-      if (searchRect.intersects(leftBox)) {
-        search(node.left, leftBox);
+      cd = (cd + 1) % this.dimensions;
+      if (Rect.intersects(leftBox, rect)) {
+        search(node.left, leftBox, cd);
       }
-      if (searchRect.intersects(rightBox)) {
-        search(node.right, rightBox);
+      if (Rect.intersects(rightBox, rect)) {
+        search(node.right, rightBox, cd);
       }
     };
 
