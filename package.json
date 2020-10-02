@@ -28,7 +28,7 @@
   },
   "name": "kd-tree-ts",
   "author": "Nick Naumenko",
-  "module": "dist/kd-tree.esm.js",
+  "module": "dist/kd-tree-ts.esm.js",
   "size-limit": [
     {
       "path": "dist/kd-tree-ts.cjs.production.min.js",
