@@ -5,154 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    #canvas {
+    .container {
+      padding: 0 30px;
+      margin: 0 auto;
+    }
+
+    .actions {
+      display: flex;
+      margin: 0 -8px;
+      padding: 20px 0;
+      list-style: none;
+    }
+
+    .actions li {
+      padding: 0 8px;
+    }
+
+    .button {
+      cursor: pointer;
+    }
+
+    .plane {
+      position: relative;
+      width: 500px;
+      height: 500px;
+    }
+
+    #canvas, #ui-level {
+      position: absolute;
+      top: 0;
+      left: 0;
       border: 1px solid black;
     }
+
+    #ui-level {
+      z-index: 3;
+    }
+    
   </style>
-  <script src="./kd-tree.js"></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
-  <h1>KD-Tree</h1>
-  <canvas id="canvas" width="500" height="500"></canvas>
+  <div class="container">
+    <h1>KD-Tree</h1>
+    <div class="field">
+      <div class="plane">
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <canvas id="ui-level" width="500" height="500"></canvas>        
+      </div>
 
-  <script>
-    window.onload = () => {
-      init();
-    };
-    
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-  
-    const drawPoint = ([x, y]) => {
-      const radius = 5;
-      ctx.fillStyle = 'black';
-      const circle = new Path2D();
-      circle.arc(x, y, radius, 0, 12);
-      ctx.fill(circle);
-    }
-
-    const drawHighlightedPoint = ([x, y]) => {
-      const radius = 5;
-      ctx.fillStyle = 'orange';
-      const circle = new Path2D();
-      circle.arc(x, y, radius, 0, 12);
-      ctx.fill(circle);
-    }
-
-    function getCoords(elem) {
-      const box = elem.getBoundingClientRect();
-      return {
-        y: box.top + pageYOffset + elem.clientLeft,
-        x: box.left + pageXOffset + elem.clientTop,
-      };
-    };
-    const base = getCoords(canvas);
-
-    function offset(x, y) {
-      return {
-        x: x - base.x,
-        y: y - base.y,
-      };
-    }
-
-    function init() {
-      const tree = new KDTree();
-
-      canvas.onclick = (e) => {
-        e.preventDefault();
-        const { pageX, pageY } = e;
-        const {x, y} = offset(pageX, pageY);
-        tree.insert([x, y]);
-        renderTree(tree);
-      }
-
-      let nearest;
-
-      const handleMove = (e) => {
-        const { pageX, pageY } = e;
-        const {x, y} = offset(pageX, pageY);
-        const point = tree.nearestNeighbor([x, y]);
-        
-        if (!nearest) {
-          nearest = point;
-        } else {
-          if (point && ((nearest[0] !== point[0]) || (nearest[1] !== point[1]))) {
-            drawPoint(nearest);
-            nearest = point;
-            drawHighlightedPoint(nearest);
-          }
-        }
-      }
-      canvas.addEventListener('mousemove', handleMove);
-      canvas.onmouseenter = (e) => {
-        canvas.addEventListener('mousemove', handleMove);
-      }
-      canvas.onmouseleave = (e) => {
-        canvas.removeEventListener('mousemove', handleMove);
-      }
-    }
-
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function drawVertical(point, box) {
-      ctx.strokeStyle = 'red';
-      const line = new Path2D();
-      line.moveTo(point[0], box[0][1]);
-      line.lineTo(point[0], box[1][1]);
-      ctx.stroke(line);
-    }
-
-    function drawHorizontal(point, box) {
-      ctx.strokeStyle = 'blue';
-      const line = new Path2D();
-      line.moveTo(box[0][0], point[1]);
-      line.lineTo(box[1][0], point[1]);
-      ctx.stroke(line);
-    }
-
-    function renderTree(tree) {
-      const dim = 2;
-      clearCanvas();
-
-      const render = (node, box = [[0, 0], [canvas.width, canvas.height]], cd = 0) => {
-        if (!node) {
-          return;
-        }
-        let boxLeft, boxRight;
-        if (cd === 0) {
-          drawVertical(node.point, box);
-          boxLeft = [
-            [...box[0]],
-            [node.point[0], box[1][1]]
-          ];
-          boxRight = [
-            [node.point[0], box[0][1]],
-            [...box[1]]
-          ]
-        } else {
-          drawHorizontal(node.point, box);
-          boxLeft = [
-            [...box[0]],
-            [box[1][0], node.point[1]]
-          ];
-          boxRight = [
-            [box[0][0], node.point[1]],
-            [...box[1]]
-          ]
-        }
-        drawPoint(node.point);
-
-
-        cd = (cd + 1) % 2;
-        render(node.left, boxLeft, cd);
-        render(node.right, boxRight, cd);
-      }
-
-      render(tree.root);
-    }
-    
-  </script>
+      <ul class="actions">
+        <li>
+          <button class="button" type="button" id="insert">insert</button>
+        </li>
+        <li>
+          <button class="button" type="button" id="find-nearest">Find nearest</button>
+        </li>
+        <li>
+          <button class="button" type="button" id="range-search">Range search</button>
+        </li>
+      </ul>
+    </div>
+  </div>
 </body>
 </html>
