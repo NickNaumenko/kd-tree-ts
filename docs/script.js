@@ -5,6 +5,8 @@ const ui = document.getElementById('ui-level');
 const ctx = canvas.getContext('2d');
 const uiCtx = ui.getContext('2d');
 const base = getCoords(canvas);
+const treeCanvas = document.getElementById('tree');
+const treeCtx = treeCanvas.getContext('2d');
 let tree;
 
 let startX, startY;
@@ -54,8 +56,10 @@ const modes = { insert, findNearest, rangeSearch };
 
 const toggleMode = (mode) => {
   modes[active].unsubscribe();
+  document.getElementById(active).disabled = false;
   active = mode;
   modes[mode].subscribe();
+  document.getElementById(active).disabled = true;
 };
 
 function handleInsert(e) {
@@ -65,6 +69,7 @@ function handleInsert(e) {
   points.push(`${x} ${y}`);
   tree.insert([x, y]);
   renderTree(tree);
+  renderBinaryTree(tree);
 }
 
 let nearest;
@@ -85,11 +90,16 @@ function handleMove(e) {
 }
 
 function init() {
+  const width = document.getElementById("wrapper").clientWidth;
+  const fieldWidth = (width >= 1200) ? width / 2 - 16 : width;
+  ui.width = fieldWidth;
+  canvas.width = fieldWidth;
+  treeCanvas.width = fieldWidth;
   tree = new KDTree();
 
   const insertButton = document.getElementById('insert');
-  const findNearestButton = document.getElementById('find-nearest');
-  const rangeSearchButton = document.getElementById('range-search');
+  const findNearestButton = document.getElementById('findNearest');
+  const rangeSearchButton = document.getElementById('rangeSearch');
   
   insertButton.onclick = (e) => {
     toggleMode(actions.insert);
@@ -169,9 +179,9 @@ function drawSelection(e) {
   uiCtx.strokeRect(startX, startY, width, height);
 }
 
-function drawPoint([x, y]) {
-  const radius = 5;
-  ctx.fillStyle = 'black';
+function drawPoint([x, y], color = 'black') {
+  const radius = 4;
+  ctx.fillStyle = color;
   const circle = new Path2D();
   circle.arc(x, y, radius, 0, 12);
   ctx.fill(circle);
@@ -184,11 +194,7 @@ function highlightSelected(selected) {
 }
 
 function drawHighlightedPoint([x, y]) {
-  const radius = 5;
-  ctx.fillStyle = 'orange';
-  const circle = new Path2D();
-  circle.arc(x, y, radius, 0, 12);
-  ctx.fill(circle);
+  drawPoint([x, y], 'orange');
 }
 
 function clearCanvas() {
@@ -251,5 +257,75 @@ function renderTree(tree) {
 
   render(tree.root);
 }
+
+// building tree
+
+function clearTree() {
+  treeCtx.clearRect(0, 0, treeCanvas.width, treeCanvas.height);
+}
+
+function getTreeHeight(node, height = 0) {
+  if (node) {
+    height++;
+
+    height = Math.max(
+      height,
+      getTreeHeight(node.left, height) || 0,
+      getTreeHeight(node.right, height)
+    );
+  }
+  return height;
+}
+
+function renderBinaryTree(tree) {
+  const dim = 2;
+  const width = treeCanvas.width;
+  const height = treeCanvas.height;
+  const treeHeight = getTreeHeight(tree.root);
+  let step = (height - 5) / treeHeight;
+
+  clearTree();
+
+  const render = (node, cd = 0, [left = 0, right = width] = [], prev) => {
+    if (!node) {
+      return;
+    }
+
+    const color = cd === 0 ? 'red' : 'blue';
+
+    let x = (right + left) / 2;
+    let y = prev ? prev[1] + step : 5;
+
+    drawNode([x, y], color, prev);
+
+    cd = (cd + 1) % dim;
+    if (node.left) {
+      render(node.left, cd, [left, x], [x, y]);
+    }
+    if (node.right) {
+      render(node.right, cd, [x, right], [x, y]);
+    }
+  }
+
+  render(tree.root);
+}
+
+function drawNode([x, y], color, prev) {
+  if (prev !== undefined) {
+    const edge = new Path2D();
+    edge.moveTo(prev[0], prev[1]);
+    edge.lineTo(x, y);
+    treeCtx.setLineDash([1, 4]);
+    treeCtx.strokeStyle = 'darkcyan';
+    treeCtx.stroke(edge);
+  } 
+  const radius = 4;
+  treeCtx.fillStyle = color;
+  const circle = new Path2D();
+  circle.arc(x, y, radius, 0, 12);
+  treeCtx.fill(circle); 
+}
+
+
 
 window.onload = () => init();

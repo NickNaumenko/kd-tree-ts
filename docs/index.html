@@ -5,9 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
     .container {
-      padding: 0 30px;
+      max-width: 1400px;
+      padding: 0 10px;
       margin: 0 auto;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
     }
 
     .actions {
@@ -22,7 +35,19 @@
     }
 
     .button {
+      padding: 5px 10px;
+      color:darkcyan;
+      font-weight: 700;
+      text-transform: uppercase;
+      background-color: white;
+      border: 1px solid darkgreen;
       cursor: pointer;
+    }
+
+    .button:disabled {
+      color: whitesmoke;
+      background-color: darkcyan;
+      opacity: 0.5;
     }
 
     .plane {
@@ -41,30 +66,58 @@
     #ui-level {
       z-index: 3;
     }
-    
+
+    #tree {
+      border: 1px solid black;
+    }
+    @media (min-width: 992px) {
+      .container {
+        padding: 0 30px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .wrapper {
+        flex-direction: row;
+        margin: 0 -8px;
+      }
+
+      .field {
+        padding: 0 8px;
+        flex-grow: 1;
+      }
+    }
   </style>
   <script type="module" src="script.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>KD-Tree</h1>
-    <div class="field">
-      <div class="plane">
-        <canvas id="canvas" width="500" height="500"></canvas>
-        <canvas id="ui-level" width="500" height="500"></canvas>        
-      </div>
+    <p>Click on the field to add point</p>
+    <div class="wrapper" id="wrapper">
+      <div class="field">
+        <div class="plane">
+          <canvas id="canvas" width="500" height="500"></canvas>
+          <canvas id="ui-level" width="500" height="500"></canvas>        
+        </div>
 
-      <ul class="actions">
-        <li>
-          <button class="button" type="button" id="insert">insert</button>
-        </li>
-        <li>
-          <button class="button" type="button" id="find-nearest">Find nearest</button>
-        </li>
-        <li>
-          <button class="button" type="button" id="range-search">Range search</button>
-        </li>
-      </ul>
+        <ul class="actions">
+          <li>
+            <button class="button" type="button" id="insert" disabled>insert</button>
+          </li>
+          <li>
+            <button class="button" type="button" id="findNearest">Find nearest</button>
+          </li>
+          <li>
+            <button class="button" type="button" id="rangeSearch">Range search</button>
+          </li>
+        </ul>
+      </div>
+      <div class="field">
+        <div class="plane">
+          <canvas id="tree" width="500" height="500"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 </body>
