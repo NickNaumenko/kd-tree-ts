@@ -1,4 +1,4 @@
-import KDTree from 'https://unpkg.com/kd-tree-ts@latest/dist/kd-tree-ts.esm.js';
+import KDTree from 'https://unpkg.com/kd-tree-ts@0.1.1-2/dist/kd-tree-ts.esm.js';
 
 const canvas = document.getElementById('canvas');
 const ui = document.getElementById('ui-level');
@@ -30,14 +30,10 @@ const insert = {
 
 const findNearest = {
   subscribe() {
-    ui.addEventListener('mousemove', handleMove);
-    ui.addEventListener('mouseenter', handleMouseenter);
-    ui.addEventListener('mouseleave', handleMouseleave);
+    document.addEventListener('mousemove', handleMove);
   },
   unsubscribe() {
-    ui.removeEventListener('mousemove', handleMove);
-    ui.removeEventListener('mouseenter', handleMouseenter);
-    ui.removeEventListener('mouseleave', handleMouseleave);
+    document.removeEventListener('mousemove', handleMove);
   }
 };
 
@@ -47,6 +43,8 @@ const rangeSearch = {
   },
   unsubscribe() {
     ui.removeEventListener('mousedown', handleEndSelection);
+    uiCtx.clearRect(0, 0, ui.width, ui.height);
+    renderTree(tree);
   }
 };
 
@@ -82,14 +80,6 @@ function handleMove(e) {
       drawHighlightedPoint(nearest);
     }
   }
-}
-
-function handleMouseenter(e) {
-  document.addEventListener('mousemove', handleMove);
-}
-
-function handleMouseleave(e) {
-  document.removeEventListener('mousemove', handleMove);
 }
 
 function init() {
@@ -129,6 +119,7 @@ function offset(x, y) {
 
 function handleStartSelection(e) {
   e.preventDefault();
+  renderTree(tree);
   const { pageX, pageY } = e;
   const { x, y } = offset(pageX, pageY);
   startX = x;
@@ -158,11 +149,9 @@ function handleEndSelection(e) {
     yMax = y;
   }
 
-  const result = tree.rangeSearch({ xMin, yMin, xMax, yMax });
+  const result = tree.rangeSearch([[xMin, yMin], [xMax, yMax]]);
   document.removeEventListener('mousemove', drawSelection);
-  console.log(result, { xMin, yMin, xMax, yMax });
   highlightSelected(result);
-  console.log(points);
 }
 
 function drawSelection(e) {
