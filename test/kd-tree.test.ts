@@ -100,7 +100,10 @@ describe('Range search', () => {
   ];
   const tree = createTree(points);
   it('Should return array with points in range', async () => {
-    const rect: Rect2d = [[1, 1], [7, 7]];
+    const rect: Rect2d = [
+      [1, 1],
+      [7, 7],
+    ];
     expect(tree.rangeSearch(rect)).toEqual(
       expect.arrayContaining([
         [2, 3],
@@ -109,7 +112,10 @@ describe('Range search', () => {
         [7, 2],
       ])
     );
-    const rect2: Rect2d = [[5, 5], [6, 5]];
+    const rect2: Rect2d = [
+      [5, 5],
+      [6, 5],
+    ];
     expect(tree.rangeSearch(rect2)).toEqual(expect.arrayContaining([[6, 5]]));
     const data: Point2D[] = await readInput(61, 'test/data/input61.txt');
     const expected: Point2D[] = [
@@ -119,11 +125,17 @@ describe('Range search', () => {
       [271, 313.125],
     ];
     const tree2 = createTree(data);
-    const rect3: Rect2d = [[237, 273.125], [313, 327.125]];
+    const rect3: Rect2d = [
+      [237, 273.125],
+      [313, 327.125],
+    ];
     expect(tree2.rangeSearch(rect3)).toEqual(expect.arrayContaining(expected));
   });
   it('Should return empty array if there is no matches', () => {
-    const rect: Rect2d = [[10, 1], [20, 10]];
+    const rect: Rect2d = [
+      [10, 1],
+      [20, 10],
+    ];
     expect(tree.rangeSearch(rect)).toEqual([]);
   });
 });

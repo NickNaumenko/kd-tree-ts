@@ -21,7 +21,7 @@ class Rect {
   }
 
   static clone(rect: Rect2d): Rect2d {
-    return  [[...rect[0]], [...rect[1]]];
+    return [[...rect[0]], [...rect[1]]];
   }
 }
 

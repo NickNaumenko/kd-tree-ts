@@ -86,7 +86,10 @@ class KDTree {
 
     const search = (
       node: Node,
-      box: Rect2d = [[-Infinity, -Infinity], [Infinity, Infinity]],
+      box: Rect2d = [
+        [-Infinity, -Infinity],
+        [Infinity, Infinity],
+      ],
       cd: number = 0
     ): void => {
       if (node === undefined) {
