@@ -42,7 +42,9 @@ const rangeSearch = {
     ui.addEventListener('mousedown', handleStartSelection);
   },
   unsubscribe() {
-    ui.removeEventListener('mousedown', handleEndSelection);
+    document.removeEventListener('mousemove', drawSelection);
+    document.removeEventListener('mouseup', handleEndSelection);
+    ui.removeEventListener('mousedown', handleStartSelection);
     uiCtx.clearRect(0, 0, ui.width, ui.height);
     renderTree(tree);
   }
