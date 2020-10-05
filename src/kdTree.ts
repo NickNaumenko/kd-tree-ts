@@ -4,7 +4,6 @@ import distance from './tools/distance';
 import Rect from './rect';
 import { Rect2d } from './types/rect2d';
 import PQ from './tools/pq';
-import { PqItem } from './tools/pq';
 
 class KDTree {
   root: Node;
@@ -42,11 +41,7 @@ class KDTree {
   }
 
   nearest(point: Point2D, k: number = 1) {
-    const nearest = new PQ(k, (a: PqItem<Point2D>, b: PqItem<Point2D>) => {
-      if (!a) return true;
-      if (!b) return false;
-      return a.dist < b.dist;
-    });
+    const nearest = new PQ<Point2D>(k);
 
     const distanceToBb = (point: Point2D, bB: KDNode, cd: number): number => {
       return Math.abs(bB.point[cd] - point[cd]);
@@ -57,7 +52,7 @@ class KDTree {
         return;
       }
       const curDist = distance(point, node.point);
-      nearest.push({ value: node.point, dist: curDist });
+      nearest.push({ value: node.point, priority: curDist });
 
       let first, last;
       if (point[cd] < node.point[cd]) {
@@ -70,14 +65,14 @@ class KDTree {
 
       search(point, first, (cd + 1) % this.dimensions);
       const distToBb = distanceToBb(point, node, cd);
-      if (nearest.size < nearest.capacity || distToBb < nearest.top.dist) {
+      if (nearest.size < nearest.capacity || distToBb < nearest.maxPriority) {
         search(point, last, (cd + 1) % this.dimensions);
       }
     };
 
     search(point, this.root, 0);
 
-    return nearest.values.map(({ value }) => value);
+    return nearest.values;
   }
 
   rangeSearch(rect: Rect2d): Point2D[] | [] {

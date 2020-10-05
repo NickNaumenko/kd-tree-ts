@@ -125,6 +125,15 @@ describe('Find nearest neighbor', () => {
         [0.5, 0.5],
       ])
     );
+    expect(tree.nearest([0.1, 1], 5)).toEqual(
+      expect.arrayContaining([
+        [0.1, 0.5],
+        [0.2, 0.5],
+        [0.3, 0.5],
+        [0.4, 0.5],
+        [0.5, 0.5]
+      ])
+    );
   });
   it('Should find array of nearest nodes in vertical data set', async () => {
     const points: Point2D[] = await readInput(8, 'test/data/vertical7.txt');
