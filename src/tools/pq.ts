@@ -6,7 +6,10 @@ export interface PqItem<T> {
 class PQ<T> {
   private data: T[] = [];
 
-  constructor(readonly capacity: number, private compare: (a: T, b: T) => boolean) {}
+  constructor(
+    readonly capacity: number,
+    private compare: (a: T, b: T) => boolean
+  ) {}
 
   get size(): number {
     return this.data.length;
@@ -21,7 +24,10 @@ class PQ<T> {
   }
 
   siftUp(i: number): void {
-    while (i > 0 && this.compare(this.data[Math.floor((i - 1) / 2)], this.data[i])) {
+    while (
+      i > 0 &&
+      this.compare(this.data[Math.floor((i - 1) / 2)], this.data[i])
+    ) {
       const parent = Math.floor((i - 1) / 2);
       [this.data[parent], this.data[i]] = [this.data[i], this.data[parent]];
       i = parent;
@@ -40,8 +46,8 @@ class PQ<T> {
       if (this.compare(this.data[max], this.data[i * 2 + 2])) {
         max = i * 2 + 2;
       }
-      if (max === i) break
-        
+      if (max === i) break;
+
       [this.data[i], this.data[max]] = [this.data[max], this.data[i]];
       i = max;
     }

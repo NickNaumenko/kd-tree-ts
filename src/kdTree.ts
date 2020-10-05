@@ -42,10 +42,10 @@ class KDTree {
   }
 
   nearest(point: Point2D, k: number = 1) {
-    const nearest = new PQ(k, (a: PqItem<Point2D>, b: PqItem<Point2D> ) => {
+    const nearest = new PQ(k, (a: PqItem<Point2D>, b: PqItem<Point2D>) => {
       if (!a) return true;
       if (!b) return false;
-      return a.dist < b.dist
+      return a.dist < b.dist;
     });
 
     const distanceToBb = (point: Point2D, bB: KDNode, cd: number): number => {

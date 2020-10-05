@@ -1,4 +1,5 @@
-import KDTree from 'https://unpkg.com/kd-tree-ts@0.1.1-2/dist/kd-tree-ts.esm.js';
+// import KDTree from 'https://unpkg.com/kd-tree-ts@0.1.1-2/dist/kd-tree-ts.esm.js';
+import KDTree from '../dist/kd-tree-ts.esm.js';
 
 const canvas = document.getElementById('canvas');
 const ui = document.getElementById('ui-level');
@@ -7,7 +8,10 @@ const uiCtx = ui.getContext('2d');
 const base = getCoords(canvas);
 const treeCanvas = document.getElementById('tree');
 const treeCtx = treeCanvas.getContext('2d');
+const kInput = document.getElementById('k-count');
+const resetButton = document.getElementById('reset');
 let tree;
+let nearest = [];
 
 let startX, startY;
 
@@ -72,26 +76,32 @@ function handleInsert(e) {
   renderBinaryTree(tree);
 }
 
-let nearest;
 function handleMove(e) {
   const { pageX, pageY } = e;
   const {x, y} = offset(pageX, pageY);
-  const point = tree.nearestNeighbor([x, y]);
-  
-  if (!nearest) {
-    nearest = point;
-  } else {
-    if (point && ((nearest[0] !== point[0]) || (nearest[1] !== point[1]))) {
-      drawPoint(nearest);
-      nearest = point;
-      drawHighlightedPoint(nearest);
-    }
-  }
+  removeSelection(nearest);
+  const k = kInput.value || 1;
+  nearest = tree.nearest([x, y], k);  
+
+  highlightSelected(nearest);
+}
+
+function removeSelection(arr) {
+  arr.forEach(point => {
+    drawPoint(point);
+  })
+}
+
+function handleReset() {
+  tree = new KDTree();
+  nearest = [];
+  renderTree(tree);
+  renderBinaryTree(tree);
 }
 
 function init() {
   const width = document.getElementById("wrapper").clientWidth;
-  const fieldWidth = (width >= 1200) ? width / 2 - 16 : width;
+  const fieldWidth = width;
   ui.width = fieldWidth;
   canvas.width = fieldWidth;
   treeCanvas.width = fieldWidth;
@@ -110,6 +120,8 @@ function init() {
   rangeSearchButton.onclick = (e) => {
     toggleMode(actions.rangeSearch);
   };
+
+  resetButton.onclick = handleReset;
 
   modes[active].subscribe();
 }

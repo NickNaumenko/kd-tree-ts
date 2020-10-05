@@ -63,9 +63,30 @@ describe('Find nearest neighbor', () => {
     ];
     const tree = createTree(points);
     expect(tree.nearest([9, 8])).toEqual([[8, 7]]);
-    expect(tree.nearest([4, 7], 3)).toEqual(expect.arrayContaining([[4, 8], [3, 6], [6, 5]]));
-    expect(tree.nearest([6, 4], 5)).toEqual(expect.arrayContaining([[6, 5], [7, 2], [9, 4], [3, 6], [8, 7]]));
-    expect(tree.nearest([7, 5], 4)).toEqual(expect.arrayContaining([[6, 5], [8, 7], [9, 4], [7, 2]]));
+    expect(tree.nearest([4, 7], 3)).toEqual(
+      expect.arrayContaining([
+        [4, 8],
+        [3, 6],
+        [6, 5],
+      ])
+    );
+    expect(tree.nearest([6, 4], 5)).toEqual(
+      expect.arrayContaining([
+        [6, 5],
+        [7, 2],
+        [9, 4],
+        [3, 6],
+        [8, 7],
+      ])
+    );
+    expect(tree.nearest([7, 5], 4)).toEqual(
+      expect.arrayContaining([
+        [6, 5],
+        [8, 7],
+        [9, 4],
+        [7, 2],
+      ])
+    );
     expect(tree.nearest([6, 8])).toEqual([[4, 8]]);
   });
   it('should return array with nearest neighbor from unbalanced tree', () => {
@@ -83,17 +104,39 @@ describe('Find nearest neighbor', () => {
     const tree = createTree(points);
     expect(tree.nearest([4, 11])).toEqual([[5, 10]]);
     expect(tree.nearest([2, 6])).toEqual([[2, 7]]);
-    expect(tree.nearest([-1, 0], 5)).toEqual(expect.arrayContaining([[1, 5], [2, 7], [3, 8], [4, 9], [5, 10]]));
+    expect(tree.nearest([-1, 0], 5)).toEqual(
+      expect.arrayContaining([
+        [1, 5],
+        [2, 7],
+        [3, 8],
+        [4, 9],
+        [5, 10],
+      ])
+    );
   });
   it('Should find array of nearest nodes in horizontal data set', async () => {
     const points: Point2D[] = await readInput(8, 'test/data/horizontal8.txt');
     const tree = createTree(points);
-    expect(tree.nearest([1, 0.5], 4)).toEqual(expect.arrayContaining([[0.9, 0.5], [0.7, 0.5], [0.6, 0.5], [0.5, 0.5]]));
+    expect(tree.nearest([1, 0.5], 4)).toEqual(
+      expect.arrayContaining([
+        [0.9, 0.5],
+        [0.7, 0.5],
+        [0.6, 0.5],
+        [0.5, 0.5],
+      ])
+    );
   });
   it('Should find array of nearest nodes in vertical data set', async () => {
     const points: Point2D[] = await readInput(8, 'test/data/vertical7.txt');
     const tree = createTree(points);
-    expect(tree.nearest([0.3, 1], 4)).toEqual(expect.arrayContaining([[0.3, 0.9], [0.3, 0.8], [0.3, 0.7], [0.3, 0.5]]));
+    expect(tree.nearest([0.3, 1], 4)).toEqual(
+      expect.arrayContaining([
+        [0.3, 0.9],
+        [0.3, 0.8],
+        [0.3, 0.7],
+        [0.3, 0.5],
+      ])
+    );
   });
 });
 
