@@ -3,21 +3,19 @@ import { Rect2d } from './types/rect2d';
 
 class Rect {
   static contains(rect: Rect2d, point: Point2D): boolean {
-    return (
-      point[0] <= rect[1][0] &&
-      point[1] <= rect[1][1] &&
-      point[0] >= rect[0][0] &&
-      point[1] >= rect[0][1]
-    );
+    for (let i = 0; i < point.length; i++) {
+      if (point[i] > rect[1][i] || point[i] < rect[0][i]) return false;
+    }
+    return true;
   }
 
   static intersects(rectA: Rect2d, rectB: Rect2d): boolean {
-    return (
-      rectA[0][0] <= rectB[1][0] &&
-      rectB[0][0] <= rectA[1][0] &&
-      rectA[0][1] <= rectB[1][1] &&
-      rectB[0][1] <= rectA[1][1]
-    );
+    for (let i = 0; i < rectA[0].length; i++) {
+      if (rectA[0][i] > rectB[1][i] || rectA[1][i] < rectB[0][i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   static clone(rect: Rect2d): Rect2d {
