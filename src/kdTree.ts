@@ -7,7 +7,25 @@ import PQ from './tools/pq';
 
 class KDTree {
   root: Node;
-  constructor(readonly points?: Point2D[], private dimensions: number = 2) {}
+  constructor(readonly points?: Point2D[], private dimensions: number = 2) {
+    const buildTree = (points: Point2D[] = [], depth = 0, parent?: Node) => {
+      if (!points.length) {
+        return;
+      }
+      const axis = depth % this.dimensions;
+      points.sort((a, b) => a[axis] - b[axis]);
+
+      const median = Math.floor(points.length / 2);
+      const node = new KDNode(points[median]);
+
+      node.parent = parent;
+      node.left = buildTree(points.slice(0, median), axis + 1, node);
+      node.right = buildTree(points.slice(median + 1), axis + 1, node);
+      return node;
+    };
+
+    this.root = buildTree(points);
+  }
 
   insert(point: Point2D) {
     if (!this.root) {

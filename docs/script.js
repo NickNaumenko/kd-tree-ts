@@ -1,5 +1,4 @@
-// import KDTree from 'https://unpkg.com/kd-tree-ts@0.1.1-2/dist/kd-tree-ts.esm.js';
-import KDTree from '../dist/kd-tree-ts.esm.js';
+import KDTree from 'https://unpkg.com/kd-tree-ts/dist/kd-tree-ts.esm.js';
 
 const canvas = document.getElementById('canvas');
 const ui = document.getElementById('ui-level');
