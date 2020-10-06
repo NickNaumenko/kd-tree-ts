@@ -19,18 +19,26 @@
     }
 
     .wrapper {
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
     }
 
-    .actions {
+    .field {
+      box-sizing: border-box;
+    }
+
+    .controls {
       display: flex;
+      flex-wrap: wrap;
       margin: 0 -8px;
       padding: 20px 0;
       list-style: none;
     }
 
-    .actions li {
+    .controls li {
+      display: flex;
+      margin-bottom: 20px;
       padding: 0 8px;
     }
 
@@ -50,9 +58,15 @@
       opacity: 0.5;
     }
 
+    .text-input {
+      box-sizing: border-box;
+      width: 50px;
+      border: 1px solid darkcyan;
+    }
+
     .plane {
       position: relative;
-      width: 500px;
+      width: 100%;
       height: 500px;
     }
 
@@ -84,6 +98,7 @@
 
       .field {
         padding: 0 8px;
+        width: 50%;
         flex-grow: 1;
       }
     }
@@ -94,28 +109,32 @@
   <div class="container">
     <h1>KD-Tree</h1>
     <p>Click on the field to add point</p>
-    <div class="wrapper" id="wrapper">
+    <div class="wrapper">
       <div class="field">
-        <div class="plane">
-          <canvas id="canvas" width="500" height="500"></canvas>
-          <canvas id="ui-level" width="500" height="500"></canvas>        
+        <div class="plane" id="wrapper">
+          <canvas id="canvas" height="500"></canvas>
+          <canvas id="ui-level" height="500"></canvas>        
         </div>
 
-        <ul class="actions">
+        <ul class="controls">
           <li>
             <button class="button" type="button" id="insert" disabled>insert</button>
           </li>
           <li>
-            <button class="button" type="button" id="findNearest">Find nearest</button>
+            <button class="button" type="button" id="findNearest">Find k nearest</button>
+            <input id="k-count" class="text-input" value="1" type="number" />
           </li>
           <li>
             <button class="button" type="button" id="rangeSearch">Range search</button>
+          </li>
+          <li>
+            <button class="button" type="button" id="reset">Reset</button>
           </li>
         </ul>
       </div>
       <div class="field">
         <div class="plane">
-          <canvas id="tree" width="500" height="500"></canvas>
+          <canvas id="tree" height="500"></canvas>
         </div>
       </div>
     </div>

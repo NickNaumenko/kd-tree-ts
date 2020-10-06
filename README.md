@@ -9,7 +9,7 @@ const tree = new KDTree;
 tree.insert(point);
 
 // find nearest neighbor
-tree.nearestNeighbor(point);
+tree.nearest(point);
 
 // range search
 tree.rangeSearch(range);

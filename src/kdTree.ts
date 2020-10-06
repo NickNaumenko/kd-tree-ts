@@ -3,10 +3,29 @@ import { Point2D } from './types/point2d';
 import distance from './tools/distance';
 import Rect from './rect';
 import { Rect2d } from './types/rect2d';
+import PQ from './tools/pq';
 
 class KDTree {
   root: Node;
-  constructor(readonly points?: Point2D[], private dimensions: number = 2) {}
+  constructor(readonly points?: Point2D[], private dimensions: number = 2) {
+    const buildTree = (points: Point2D[] = [], depth = 0, parent?: Node) => {
+      if (!points.length) {
+        return;
+      }
+      const axis = depth % this.dimensions;
+      points.sort((a, b) => a[axis] - b[axis]);
+
+      const median = Math.floor(points.length / 2);
+      const node = new KDNode(points[median]);
+
+      node.parent = parent;
+      node.left = buildTree(points.slice(0, median), axis + 1, node);
+      node.right = buildTree(points.slice(median + 1), axis + 1, node);
+      return node;
+    };
+
+    this.root = buildTree(points);
+  }
 
   insert(point: Point2D) {
     if (!this.root) {
@@ -39,9 +58,8 @@ class KDTree {
     return node;
   }
 
-  nearestNeighbor(point: Point2D) {
-    let bestDist = Infinity;
-    let result: Point2D | null = null;
+  nearest(point: Point2D, k: number = 1) {
+    const nearest = new PQ<Point2D>(k);
 
     const distanceToBb = (point: Point2D, bB: KDNode, cd: number): number => {
       return Math.abs(bB.point[cd] - point[cd]);
@@ -52,10 +70,8 @@ class KDTree {
         return;
       }
       const curDist = distance(point, node.point);
-      if (curDist < bestDist) {
-        bestDist = curDist;
-        result = node.point;
-      }
+      nearest.push({ value: node.point, priority: curDist });
+
       let first, last;
       if (point[cd] < node.point[cd]) {
         first = node.left;
@@ -67,14 +83,14 @@ class KDTree {
 
       search(point, first, (cd + 1) % this.dimensions);
       const distToBb = distanceToBb(point, node, cd);
-      if (distToBb < bestDist) {
+      if (nearest.size < nearest.capacity || distToBb < nearest.maxPriority) {
         search(point, last, (cd + 1) % this.dimensions);
       }
     };
 
     search(point, this.root, 0);
 
-    return result;
+    return nearest.values;
   }
 
   rangeSearch(rect: Rect2d): Point2D[] | [] {

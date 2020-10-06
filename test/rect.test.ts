@@ -1,5 +1,4 @@
 import Rect from '../src/rect';
-import { Point2D } from '../src/types/point2d';
 import { Rect2d } from '../src/types/rect2d';
 
 const rectA: Rect2d = [
@@ -42,11 +41,13 @@ describe('Rect intersection', () => {
 
 describe('Rect contains', () => {
   it('Should return true if rectangle contains point', () => {
-    const point: Point2D = [1, 2];
-    expect(Rect.contains(rectA, point)).toBe(true);
+    expect(Rect.contains(rectA, [1, 2])).toBe(true);
+    expect(Rect.contains(rectA, [0, 1])).toBe(true);
+    expect(Rect.contains(rectA, [4, 0])).toBe(true);
+    expect(Rect.contains(rectA, [4, 3])).toBe(true);
   });
   it('Should return false if rectangle does not contain point', () => {
-    const point: Point2D = [10, 2];
-    expect(Rect.contains(rectA, point)).toBe(false);
+    expect(Rect.contains(rectA, [10, 2])).toBe(false);
+    expect(Rect.contains(rectA, [0, -0.1])).toBe(false);
   });
 });
