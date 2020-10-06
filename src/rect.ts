@@ -10,12 +10,12 @@ class Rect {
   }
 
   static intersects(rectA: Rect2d, rectB: Rect2d): boolean {
-    return (
-      rectA[0][0] <= rectB[1][0] &&
-      rectB[0][0] <= rectA[1][0] &&
-      rectA[0][1] <= rectB[1][1] &&
-      rectB[0][1] <= rectA[1][1]
-    );
+    for (let i = 0; i < rectA[0].length; i++) {
+      if (rectA[0][i] > rectB[1][i] || rectA[1][i] < rectB[0][i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   static clone(rect: Rect2d): Rect2d {

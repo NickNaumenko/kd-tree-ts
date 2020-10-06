@@ -10,9 +10,7 @@ class PQ<T> {
     return a.priority < b.priority;
   }
 
-  constructor(
-    readonly capacity: number,
-  ) {}
+  constructor(readonly capacity: number) {}
 
   get size(): number {
     return this.data.length;
@@ -31,7 +29,10 @@ class PQ<T> {
   }
 
   siftUp(i: number): void {
-    while (i > 0 && this.lessThan(this.data[Math.floor((i - 1) / 2)], this.data[i])) {
+    while (
+      i > 0 &&
+      this.lessThan(this.data[Math.floor((i - 1) / 2)], this.data[i])
+    ) {
       const parent = Math.floor((i - 1) / 2);
       [this.data[parent], this.data[i]] = [this.data[i], this.data[parent]];
       i = parent;
