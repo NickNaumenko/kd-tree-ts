@@ -2,6 +2,8 @@
 A base implementation of kd-tree
 
 ```js
+const { default: KDTree } = require("kd-tree-ts");
+
 // create new tree
 const tree = new KDTree;
 
@@ -9,7 +11,7 @@ const tree = new KDTree;
 tree.insert(point);
 
 // find nearest neighbor
-tree.nearest(point);
+tree.nearest(point, k);
 
 // range search
 tree.rangeSearch(range);
